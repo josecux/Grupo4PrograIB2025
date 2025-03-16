@@ -3,17 +3,28 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
  */
 
-/**
- *
- * @author yo
- */
+import java.util.Scanner;
 public class Zoologico {
 
-    /**
-     * @param args the command line arguments
-     */
+    
     public static void main(String[] args) {
-        // TODO code application logic here
+     Scanner scanner = new Scanner(System.in);
+        menuZoo (scanner);
+    }
+    public static void menuZoo (Scanner scanner){
+        int opcionZoo;
+         {
+         System.out.println("Zoo:");
+         System.out.println("Fase I:");
+         System.out.println("Fase II:");
+         System.out.println("Salir:");
+      }
+    
+    
+        
+     
+     
+        
     }
     
 }
