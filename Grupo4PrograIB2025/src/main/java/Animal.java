@@ -1,12 +1,17 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+class Animal {
+    String nombre, especie, tipoAlimento;
+    double consumoDiario;
 
-/**
- *
- * @author yo
- */
-public class Animal {
-    
+    public Animal(String nombre, String especie, double consumoDiario, String tipoAlimento) {
+        this.nombre = nombre;
+        this.especie = especie;
+        this.consumoDiario = consumoDiario;
+        this.tipoAlimento = tipoAlimento;
+    }
+
+    @Override
+    public String toString() {
+        return nombre + " (" + especie + ", consumo diario: " + consumoDiario + " kg de " + tipoAlimento + ")";
+    }
 }
+
