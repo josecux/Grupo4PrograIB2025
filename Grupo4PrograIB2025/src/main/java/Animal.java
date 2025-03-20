@@ -28,6 +28,6 @@ public class Animal {
 
     @Override
     public String toString() {
-        return nombre + " (" + especie + ", consumo diario: " + consumoDiario + " kg de " + tipoAlimento + ")";
+        return nombre + " (" + especie + ", consumo diario: " + consumoDiario + " lb de " + tipoAlimento + ")";
     }
 }

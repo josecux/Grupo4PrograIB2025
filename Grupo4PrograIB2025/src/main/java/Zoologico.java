@@ -78,7 +78,7 @@ public class Zoologico {
     String nombre = scanner.nextLine();
     System.out.print("Ingrese el tipo de animal (1: Mamífero, 2: Ave, 3: Reptil): ");
     int tipo = scanner.nextInt();
-    System.out.print("Ingrese la cantidad de alimento diario (en kg): ");
+    System.out.print("Ingrese la cantidad de alimento diario (en lb): ");
     double alimentoDiario = scanner.nextDouble();
     scanner.nextLine(); 
     System.out.print("Ingrese el alimento ingerido: ");
