@@ -7,6 +7,46 @@
  *
  * @author yo
  */
-public class Reptil {
+public class Reptil extends Animal {
+
+    public Reptil (String nombre, double consumoDiario, String tipoAlimento) {
+        super(nombre, "Reptil", consumoDiario, tipoAlimento);
+    }
+
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+
+    public String getEspecie() {
+        return especie;
+    }
+
+    public void setEspecie(String especie) {
+        this.especie = especie;
+    }
+
+   
+    public double getConsumoDiario() {
+        return consumoDiario;
+    }
+
+    public void setConsumoDiario(double consumoDiario) {
+        this.consumoDiario = consumoDiario;
+    }
+
+    public String getTipoAlimento() {
+        return tipoAlimento;
+    }
+
+    public void setTipoAlimento(String tipoAlimento) {
+        this.tipoAlimento = tipoAlimento;
+    }
     
-}
+ }   
+
