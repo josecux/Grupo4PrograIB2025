@@ -1,4 +1,4 @@
-class Animal {
+public class Animal {
     String nombre, especie, tipoAlimento;
     double consumoDiario;
 
@@ -9,9 +9,25 @@ class Animal {
         this.tipoAlimento = tipoAlimento;
     }
 
+    // Métodos getters
+    public String getNombre() {
+        return nombre;
+    }
+
+    public String getEspecie() {
+        return especie;
+    }
+
+    public double getConsumoDiario() {
+        return consumoDiario;
+    }
+
+    public String getTipoAlimento() {
+        return tipoAlimento;
+    }
+
     @Override
     public String toString() {
         return nombre + " (" + especie + ", consumo diario: " + consumoDiario + " kg de " + tipoAlimento + ")";
     }
 }
-
