@@ -10,7 +10,7 @@ public class Zoologico {
         Scanner scanner = new Scanner(System.in);
         menuPrincipal(scanner);
     }
-
+           
     public static void menuPrincipal(Scanner scanner) {
         int opcion;
         do {
@@ -41,9 +41,9 @@ public class Zoologico {
             }
         } while (opcion != 4);
     }
-
+         
     public static void menuZoo(Scanner scanner) {
-        int opcionZoo;
+         int opcionZoo;
         do {
             System.out.println("\nMenú del Zoológico:");
             System.out.println("1. Agregar nuevo animal");
@@ -112,7 +112,7 @@ public class Zoologico {
     }
 
     public static void exportarDatos() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("animales_prueb.csv"))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("ejemplos.csv"))) {
             writer.write("Nombre,Especie,ConsumoDiario,TipoAlimento\n");
             for (Animal animal : animales) {
                 writer.write(animal.getNombre() + "," + animal.getEspecie() + "," + animal.getConsumoDiario() + "," + animal.getTipoAlimento() + "\n");
