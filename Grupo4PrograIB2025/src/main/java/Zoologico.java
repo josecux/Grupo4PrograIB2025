@@ -43,13 +43,14 @@ public class Zoologico {
     }
          
     public static void menuZoo(Scanner scanner) {
-         int opcionZoo;
+        int opcionZoo;
         do {
             System.out.println("\nMenú del Zoológico:");
             System.out.println("1. Agregar nuevo animal");
             System.out.println("2. Ver todos los animales");
             System.out.println("3. Exportar datos a CSV");
-            System.out.println("4. Regresar al Menú Principal");
+            System.out.println("4. Calcular consumo de alimento en x días");
+            System.out.println("5. Regresar al Menú Principal");
             System.out.print("Seleccione una opción: ");
             opcionZoo = scanner.nextInt();
             scanner.nextLine();
@@ -65,25 +66,27 @@ public class Zoologico {
                     exportarDatos();
                     break;
                 case 4:
+                    calcularConsumo(scanner);
+                    break;
+                case 5:
                     System.out.println("Regresando al Menú Principal...");
                     break;
                 default:
                     System.out.println("Opción no válida.");
             }
-        } while (opcionZoo != 4);
+        } while (opcionZoo != 5);
     }
 
-   public static void agregarAnimal(Scanner scanner) {
-    System.out.print("Ingrese el nombre del animal: ");
-    String nombre = scanner.nextLine();
-    System.out.print("Ingrese el tipo de animal (1: Mamífero, 2: Ave, 3: Reptil): ");
-    int tipo = scanner.nextInt();
-    System.out.print("Ingrese la cantidad de alimento diario (en lb): ");
-    double alimentoDiario = scanner.nextDouble();
-    scanner.nextLine(); 
-    System.out.print("Ingrese el alimento ingerido: ");
-    String alimento = scanner.nextLine();
-
+    public static void agregarAnimal(Scanner scanner) {
+        System.out.print("Ingrese el nombre del animal: ");
+        String nombre = scanner.nextLine();
+        System.out.print("Ingrese el tipo de animal (1: Mamífero, 2: Ave, 3: Reptil): ");
+        int tipo = scanner.nextInt();
+        System.out.print("Ingrese la cantidad de alimento diario (en lb): ");
+        double alimentoDiario = scanner.nextDouble();
+        scanner.nextLine(); 
+        System.out.print("Ingrese el alimento ingerido: ");
+        String alimento = scanner.nextLine();
 
         Animal animal = null;
         if (tipo == 1) {
@@ -121,6 +124,36 @@ public class Zoologico {
         } catch (IOException e) {
             System.out.println("Error al exportar los datos: " + e.getMessage());
         }
+    }
+
+    public static void calcularConsumo(Scanner scanner) {
+        System.out.print("Ingrese el nombre del animal: ");
+        String nombre = scanner.nextLine();
+        Animal animal = buscarAnimal(nombre);
+        if (animal == null) {
+            System.out.println("Animal no encontrado.");
+            return;
+        }
+        System.out.print("Ingrese la cantidad de días: ");
+        int dias = scanner.nextInt();
+        double consumoTotal = calcularConsumoRecursivo(animal.getConsumoDiario(), dias);
+        System.out.println("El animal " + nombre + " necesitará " + consumoTotal + " libras de alimento en " + dias + " días.");
+    }
+
+    public static double calcularConsumoRecursivo(double consumoDiario, int dias) {
+        if (dias == 0) {
+            return 0;
+        }
+        return consumoDiario + calcularConsumoRecursivo(consumoDiario, dias - 1);
+    }
+
+    public static Animal buscarAnimal(String nombre) {
+        for (Animal animal : animales) {
+            if (animal.getNombre().equalsIgnoreCase(nombre)) {
+                return animal;
+            }
+        }
+        return null;
     }
 
     public static void faseII() {
