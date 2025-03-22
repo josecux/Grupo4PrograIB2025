@@ -9,7 +9,7 @@ public class Animal {
         this.tipoAlimento = tipoAlimento;
     }
 
-    // Métodos getters
+    
     public String getNombre() {
         return nombre;
     }
