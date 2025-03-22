@@ -14,6 +14,7 @@ public class Reptil extends Animal {
     }
 
 
+    @Override
     public String getNombre() {
         return nombre;
     }
@@ -23,6 +24,7 @@ public class Reptil extends Animal {
     }
 
 
+    @Override
     public String getEspecie() {
         return especie;
     }
@@ -32,6 +34,7 @@ public class Reptil extends Animal {
     }
 
    
+    @Override
     public double getConsumoDiario() {
         return consumoDiario;
     }
@@ -40,6 +43,7 @@ public class Reptil extends Animal {
         this.consumoDiario = consumoDiario;
     }
 
+    @Override
     public String getTipoAlimento() {
         return tipoAlimento;
     }

@@ -1,5 +1,4 @@
 
-import java.util.logging.Logger;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -19,6 +18,7 @@ public class Ave extends Animal {
     }
 
 
+    @Override
     public String getNombre() {
         return nombre;
     }
@@ -28,6 +28,7 @@ public class Ave extends Animal {
     }
 
 
+    @Override
     public String getEspecie() {
         return especie;
     }
@@ -37,6 +38,7 @@ public class Ave extends Animal {
     }
 
    
+    @Override
     public double getConsumoDiario() {
         return consumoDiario;
     }
@@ -45,6 +47,7 @@ public class Ave extends Animal {
         this.consumoDiario = consumoDiario;
     }
 
+    @Override
     public String getTipoAlimento() {
         return tipoAlimento;
     }
