@@ -9,47 +9,7 @@
  */
 public class Mamifero extends Animal {
 
-    public Mamifero (String nombre, double consumoDiario, String tipoAlimento) {
-        super(nombre, "Mamifero", consumoDiario, tipoAlimento);
+    public Mamifero(int id, String nombre, double consumoDiario, String tipoAlimento) {
+        super(id, nombre, "Mamifero", consumoDiario, tipoAlimento);
     }
-
-
-    @Override
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-
-    @Override
-    public String getEspecie() {
-        return especie;
-    }
-
-    public void setEspecie(String especie) {
-        this.especie = especie;
-    }
-
-   
-    @Override
-    public double getConsumoDiario() {
-        return consumoDiario;
-    }
-
-    public void setConsumoDiario(double consumoDiario) {
-        this.consumoDiario = consumoDiario;
-    }
-
-    @Override
-    public String getTipoAlimento() {
-        return tipoAlimento;
-    }
-
-    public void setTipoAlimento(String tipoAlimento) {
-        this.tipoAlimento = tipoAlimento;
-    }
-    
- }   
+}
