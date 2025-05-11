@@ -1,7 +1,7 @@
 public class Animal {
-    protected int idAnimal;
-    protected String nombre, especie, tipoAlimento;
-    protected double consumoDiario;
+    int idAnimal;
+    String nombre, especie, tipoAlimento;
+    double consumoDiario;
 
     public Animal(int idAnimal, String nombre, String especie, double consumoDiario, String tipoAlimento) {
         this.idAnimal = idAnimal;
@@ -23,20 +23,36 @@ public class Animal {
         return nombre;
     }
 
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
     public String getEspecie() {
         return especie;
+    }
+
+    public void setEspecie(String especie) {
+        this.especie = especie;
     }
 
     public double getConsumoDiario() {
         return consumoDiario;
     }
 
+    public void setConsumoDiario(double consumoDiario) {
+        this.consumoDiario = consumoDiario;
+    }
+
     public String getTipoAlimento() {
         return tipoAlimento;
     }
 
+    public void setTipoAlimento(String tipoAlimento) {
+        this.tipoAlimento = tipoAlimento;
+    }
+
     @Override
     public String toString() {
-        return "ID: " + idAnimal + ", " + nombre + " (" + especie + ", consumo diario: " + consumoDiario + " lb de " + tipoAlimento + ")";
+        return "ID: " + idAnimal + ", Nombre: " + nombre + " (" + especie + ", consumo diario: " + consumoDiario + " lb de " + tipoAlimento + ")";
     }
 }

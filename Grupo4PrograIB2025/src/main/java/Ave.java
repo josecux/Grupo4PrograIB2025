@@ -12,8 +12,24 @@
 
 
 public class Ave extends Animal {
+    private String tipoVuelo;
 
-    public Ave(int id, String nombre, double consumoDiario, String tipoAlimento) {
-        super(id, nombre, "Ave", consumoDiario, tipoAlimento);
+    public Ave(int idAnimal, String nombre, double consumoDiario, String tipoVuelo) {
+        // Llama al constructor de la superclase Animal
+        super(idAnimal, nombre, "Ave", consumoDiario, "Granos"); // Valores por defecto para Ave
+        this.tipoVuelo = tipoVuelo;
+    }
+
+    public String getTipoVuelo() {
+        return tipoVuelo;
+    }
+
+    public void setTipoVuelo(String tipoVuelo) {
+        this.tipoVuelo = tipoVuelo;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + ", Tipo de Vuelo: " + tipoVuelo;
     }
 }

@@ -1,12 +1,10 @@
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.*;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Scanner;
 
 public class Zoologico {
-    private static final List<Animal> animales = new ArrayList<>();
-    private static final Animal[] arregloAnimales = new Animal[10]; // NUEVO: Arreglo fijo de 10 posiciones
-    private static int contadorAnimales = 0; // NUEVO: Contador para el arreglo
+    private static final Animal[] animales = new Animal[10];
+    private static int indice = 0;
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -18,19 +16,19 @@ public class Zoologico {
         do {
             System.out.println("Menú Principal:");
             System.out.println("1. Zoo");
-            System.out.println("2. Fase II");
+            System.out.println("2. Fase 2 - Arreglos");
             System.out.println("3. Fase III");
             System.out.println("4. Salir");
             System.out.print("Seleccione una opción: ");
             opcion = scanner.nextInt();
-            scanner.nextLine();
+            scanner.nextLine(); // Limpiar buffer
 
             switch (opcion) {
                 case 1:
                     menuZoo(scanner);
                     break;
                 case 2:
-                    faseII(scanner); // CORREGIDO: ahora le pasa scanner
+                    faseII(scanner);
                     break;
                 case 3:
                     faseIII();
@@ -55,7 +53,7 @@ public class Zoologico {
             System.out.println("5. Regresar al Menú Principal");
             System.out.print("Seleccione una opción: ");
             opcionZoo = scanner.nextInt();
-            scanner.nextLine();
+            scanner.nextLine(); // Limpiar buffer
 
             switch (opcionZoo) {
                 case 1:
@@ -80,230 +78,210 @@ public class Zoologico {
     }
 
     public static void agregarAnimal(Scanner scanner) {
-        if (contadorAnimales >= arregloAnimales.length) { // NUEVO: Validación si está lleno
+        if (indice >= animales.length) {
             System.out.println("El array ya está lleno.");
             return;
         }
 
-        int id;
-        while (true) {
-            System.out.print("Ingrese el id del animal: ");
-            id = scanner.nextInt();
-            scanner.nextLine();
-            if (!existeIdEnAmbos(id)) break; // NUEVO: Validación id único en ambos contenedores
+        System.out.print("Ingrese el ID del animal: ");
+        int id = scanner.nextInt();
+        while (animalExiste(id)) {
             System.out.println("El identificador es único para cada animal.");
+            System.out.print("Ingrese el ID del animal: ");
+            id = scanner.nextInt();
         }
 
+        scanner.nextLine(); // Limpiar buffer
         System.out.print("Ingrese el nombre del animal: ");
         String nombre = scanner.nextLine();
+
         System.out.print("Ingrese el tipo de animal (1: Mamífero, 2: Ave, 3: Reptil): ");
         int tipo = scanner.nextInt();
+
         System.out.print("Ingrese la cantidad de alimento diario (en lb): ");
         double alimentoDiario = scanner.nextDouble();
-        scanner.nextLine();
-        System.out.print("Ingrese el alimento ingerido: ");
-        String alimento = scanner.nextLine();
 
-        Animal animal = null;
         switch (tipo) {
             case 1:
-                animal = new Mamifero(id, nombre, alimentoDiario, alimento);
+                animales[indice] = new Mamifero(id, nombre, alimentoDiario, "Carnívoro");
                 break;
             case 2:
-                animal = new Ave(id, nombre, alimentoDiario, alimento);
+                animales[indice] = new Ave(id, nombre, alimentoDiario, "Granos");
                 break;
             case 3:
-                animal = new Reptil(id, nombre, alimentoDiario, alimento);
+                animales[indice] = new Reptil(id, nombre, alimentoDiario, "Insectos");
                 break;
             default:
-                System.out.println("Tipo de animal no válido.");
+                System.out.println("Tipo no válido.");
                 return;
         }
 
-        if (animal != null) {
-            arregloAnimales[contadorAnimales] = animal; // NUEVO: Agregar al arreglo
-            contadorAnimales++;
-            System.out.println("Animal agregado exitosamente.");
-        }
+        indice++;
+        System.out.println("Animal agregado exitosamente.");
+    }
 
-        // NUEVO: Preguntar si desea agregar otro
-        System.out.print("¿Desea agregar otro animal? (si/no): ");
-        String respuesta = scanner.nextLine();
-        if (respuesta.equalsIgnoreCase("si")) {
-            agregarAnimal(scanner);
+    public static boolean animalExiste(int id) {
+        for (int i = 0; i < indice; i++) {
+            if (animales[i].getIdAnimal() == id) {
+                return true;
+            }
         }
+        return false;
     }
 
     public static void verAnimales() {
-        boolean hayAnimales = false;
-        for (Animal a : arregloAnimales) {
-            if (a != null) {
-                System.out.println(a);
-                hayAnimales = true;
-            }
-        }
-        if (!hayAnimales) {
-            System.out.println("No hay animales registrados.");
+        System.out.println("Animales registrados:");
+        for (int i = 0; i < indice; i++) {
+            System.out.println(animales[i].toString());
         }
     }
 
     public static void exportarDatos() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("ejemplos.csv"))) {
-            writer.write("ID,Nombre,Especie,ConsumoDiario,TipoAlimento\n");
-            for (Animal animal : arregloAnimales) {
-                if (animal != null) {
-                    writer.write(animal.getIdAnimal() + "," + animal.getNombre() + "," + animal.getEspecie() + "," + animal.getConsumoDiario() + "," + animal.getTipoAlimento() + "\n");
-                }
+        try {
+            java.io.BufferedWriter writer = new java.io.BufferedWriter(new java.io.FileWriter("animales.csv"));
+            writer.write("ID,Nombre,Especie,ConsumoDiario\n");
+            for (int i = 0; i < indice; i++) {
+                writer.write(animales[i].getIdAnimal() + "," +
+                             animales[i].getNombre() + "," +
+                             animales[i].getEspecie() + "," +
+                             animales[i].getConsumoDiario() + "\n");
             }
-            System.out.println("Datos exportados exitosamente.");
-        } catch (IOException e) {
+            writer.close();
+            System.out.println("Datos exportados correctamente a 'animales.csv'.");
+        } catch (java.io.IOException e) {
             System.out.println("Error al exportar los datos: " + e.getMessage());
         }
     }
 
     public static void calcularConsumo(Scanner scanner) {
-        System.out.print("Ingrese el nombre del animal: ");
-        String nombre = scanner.nextLine();
-        Animal animal = null;
-        for (Animal a : arregloAnimales) {
-            if (a != null && a.getNombre().equalsIgnoreCase(nombre)) {
-                animal = a;
-                break;
-            }
-        }
-
-        if (animal == null) {
-            System.out.println("Animal no encontrado.");
-            return;
-        }
-
-        System.out.print("Ingrese la cantidad de días: ");
+        System.out.print("Ingrese el número de días para calcular el consumo: ");
         int dias = scanner.nextInt();
-        double consumoTotal = calcularConsumoRecursivo(animal.getConsumoDiario(), dias);
-        System.out.println("El animal " + nombre + " necesitará " + consumoTotal + " libras de alimento en " + dias + " días.");
-    }
 
-    public static double calcularConsumoRecursivo(double consumoDiario, int dias) {
-        if (dias == 0) return 0;
-        return consumoDiario + calcularConsumoRecursivo(consumoDiario, dias - 1);
+        double totalConsumo = 0;
+        for (int i = 0; i < indice; i++) {
+            totalConsumo += animales[i].getConsumoDiario() * dias;
+        }
+
+        System.out.println("Consumo total de alimento para " + dias + " días: " + totalConsumo + " lb.");
     }
 
     public static void faseII(Scanner scanner) {
-        String opcion;
-        boolean continuar = true;
-
-        while (continuar) {
-            System.out.println("\nSubmenú Fase II:");
+        int opcionFase2;
+        boolean continuarFase2 = true;
+        do {
+            System.out.println("\nFase 2 - Arreglos:");
             System.out.println("a: Agregar Mamífero");
             System.out.println("b: Agregar Ave");
             System.out.println("c: Agregar Reptil");
             System.out.println("d: Ordenar Arreglo");
-            System.out.println("e: Mostrar IDs de Animales");
-            System.out.println("f: Regresar al menú principal");
+            System.out.println("e: Mostrar Arreglo");
+            System.out.println("f: Regresar al Menú Principal");
             System.out.print("Seleccione una opción: ");
-            opcion = scanner.nextLine().toLowerCase();
-
-            switch (opcion) {
-                case "a":
-                case "b":
-                case "c":
-                    agregarAnimalPorTipo(scanner, opcion);
-                    break;
-                case "d":
-                    ordenarAnimales(scanner); // NUEVO: Ordenar arreglo con opción asc/desc
-                    break;
-                case "e":
-                    mostrarIds(); // NUEVO: Mostrar solo IDs
-                    break;
-                case "f":
-                    continuar = false;
-                    break;
-                default:
-                    System.out.println("Opción no válida.");
+            String opcionStr = scanner.nextLine();
+            if (opcionStr.length() == 1) {
+                opcionFase2 = opcionStr.charAt(0);
+                switch (opcionFase2) {
+                    case 'a':
+                        agregarAnimalFase2(scanner, "Mamífero");
+                        break;
+                    case 'b':
+                        agregarAnimalFase2(scanner, "Ave");
+                        break;
+                    case 'c':
+                        agregarAnimalFase2(scanner, "Reptil");
+                        break;
+                    case 'd':
+                        ordenarArreglo(scanner); // Llamada al método para ordenar
+                        break;
+                    case 'e':
+                        mostrarArreglo();
+                        break;
+                    case 'f':
+                        System.out.println("Regresando al Menú Principal...");
+                        continuarFase2 = false;
+                        break;
+                    default:
+                        System.out.println("Opción no válida.");
+                }
+            } else {
+                System.out.println("Opción no válida.");
             }
-        }
+        } while (continuarFase2);
     }
 
-    public static void agregarAnimalPorTipo(Scanner scanner, String tipo) {
-        if (contadorAnimales >= arregloAnimales.length) {
+    public static void agregarAnimalFase2(Scanner scanner, String tipo) {
+        if (indice >= animales.length) {
             System.out.println("El array ya está lleno.");
             return;
         }
 
-        int id;
-        while (true) {
-            System.out.print("Ingrese el ID del animal: ");
-            id = scanner.nextInt();
-            scanner.nextLine();
-            if (!existeIdEnAmbos(id)) break;
+        System.out.print("Ingrese el ID del " + tipo + ": ");
+        int id = scanner.nextInt();
+        while (animalExiste(id)) {
             System.out.println("El identificador es único para cada animal.");
+            System.out.print("Ingrese el ID del " + tipo + ": ");
+            id = scanner.nextInt();
         }
+        scanner.nextLine(); // Limpiar buffer
 
-        System.out.print("Ingrese el nombre del animal: ");
+        System.out.print("Ingrese el nombre del " + tipo + ": ");
         String nombre = scanner.nextLine();
 
-        System.out.print("Ingrese la cantidad de alimento diario (en lb): ");
+        System.out.print("Ingrese la cantidad de alimento diario (en lb) del " + tipo + ": ");
         double alimentoDiario = scanner.nextDouble();
-        scanner.nextLine();
+        scanner.nextLine(); // Limpiar buffer
 
-        System.out.print("Ingrese el tipo de alimento: ");
-        String alimento = scanner.nextLine();
-
-        Animal animal = null;
         switch (tipo) {
-            case "a":
-                animal = new Mamifero(id, nombre, alimentoDiario, alimento);
+            case "Mamífero":
+                animales[indice] = new Mamifero(id, nombre, alimentoDiario, "Carnívoro");
                 break;
-            case "b":
-                animal = new Ave(id, nombre, alimentoDiario, alimento);
+            case "Ave":
+                animales[indice] = new Ave(id, nombre, alimentoDiario, "Granos");
                 break;
-            case "c":
-                animal = new Reptil(id, nombre, alimentoDiario, alimento);
+            case "Reptil":
+                animales[indice] = new Reptil(id, nombre, alimentoDiario, "Insectos");
                 break;
         }
+        indice++;
+        System.out.println(tipo + " agregado exitosamente.");
 
-        if (animal != null) {
-            arregloAnimales[contadorAnimales] = animal;
-            contadorAnimales++;
-            System.out.println("Animal agregado exitosamente.");
+        System.out.print("¿Desea agregar otro Animal a la lista (si/no)? ");
+        String respuesta = scanner.nextLine().toLowerCase();
+        if (respuesta.equals("si")) {
+            faseII(scanner); // Volver al submenú
         }
     }
 
-    public static void ordenarAnimales(Scanner scanner) { // NUEVO
-        System.out.print("¿Desea ordenar por ID Ascendente (a) o Descendente (d)? ");
-        String orden = scanner.nextLine().toLowerCase();
-
-        Arrays.sort(arregloAnimales, 0, contadorAnimales, (a, b) -> {
-            if (a == null || b == null) return 0;
-            return orden.equals("a") ? Integer.compare(a.getIdAnimal(), b.getIdAnimal()) : Integer.compare(b.getIdAnimal(), a.getIdAnimal());
-        });
-
-        System.out.println("Animales ordenados correctamente.");
-    }
-
-    public static void mostrarIds() { // NUEVO
-        if (contadorAnimales == 0) {
-            System.out.println("No hay animales registrados.");
+    public static void ordenarArreglo(Scanner scanner) {
+        if (indice == 0) {
+            System.out.println("No hay animales para ordenar.");
             return;
         }
 
-        System.out.println("IDs de los animales registrados:");
-        for (int i = 0; i < contadorAnimales; i++) {
-            System.out.println(arregloAnimales[i].getIdAnimal());
+        System.out.print("¿Ordenar de forma (a)scendente o (d)escendente por ID? ");
+        String orden = scanner.nextLine().toLowerCase();
+
+        Comparator<Animal> comparador = Comparator.comparingInt(Animal::getIdAnimal);
+
+        if (orden.equals("a")) {
+            Arrays.sort(animales, 0, indice, comparador);
+            System.out.println("Arreglo ordenado ascendentemente por ID.");
+        } else if (orden.equals("d")) {
+            Arrays.sort(animales, 0, indice, comparador.reversed());
+            System.out.println("Arreglo ordenado descendentemente por ID.");
+        } else {
+            System.out.println("Opción de ordenamiento no válida.");
         }
     }
 
-    public static boolean existeIdEnAmbos(int id) { // NUEVO: Revisa arreglo y lista
-        for (Animal a : arregloAnimales) {
-            if (a != null && a.getIdAnimal() == id) return true;
+    public static void mostrarArreglo() {
+        System.out.println("Contenido del arreglo de animales (ID):");
+        for (int i = 0; i < indice; i++) {
+            System.out.println("[" + i + "] ID: " + animales[i].getIdAnimal());
         }
-        for (Animal a : animales) {
-            if (a.getIdAnimal() == id) return true;
-        }
-        return false;
     }
 
     public static void faseIII() {
-        System.out.println("\nFase III: Funcionalidades a implementar.");
+        System.out.println("Fase III");
     }
 }
