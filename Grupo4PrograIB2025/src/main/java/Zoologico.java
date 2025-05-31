@@ -1,6 +1,7 @@
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Scanner;
+import java.sql.Connection;
 
 public class Zoologico {
     private static final Animal[] animales = new Animal[10];
@@ -281,7 +282,7 @@ public class Zoologico {
         }
     }
 
-   public static void faseIII() {
+    public static void faseIII() {
         Scanner scanner = new Scanner(System.in);
         char opcionAnimal;
         do {
@@ -347,5 +348,4 @@ public class Zoologico {
         } while (opcion != 'X');
     }
 
-    
 }
