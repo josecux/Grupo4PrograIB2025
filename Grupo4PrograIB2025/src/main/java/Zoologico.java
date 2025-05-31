@@ -33,11 +33,11 @@ public static void menuPrincipal(Scanner scanner) {
             System.out.println("0. Salir");
             System.out.print("Seleccione una opción: ");
             opcion = scanner.nextInt();
-            scanner.nextLine(); // consume newline
+            scanner.nextLine(); 
             switch (opcion) {
-                case 1: // Changed from '->' to ':'
+                case 1:
                     menuZoo(scanner);
-                    break; // Added 'break;'
+                    break; 
                 case 2:
                     faseII(scanner);
                     break;
@@ -65,7 +65,7 @@ public static void menuPrincipal(Scanner scanner) {
             System.out.println("0. Volver al menú principal");
             System.out.print("Seleccione una opción: ");
             opcion = scanner.nextInt();
-            scanner.nextLine(); // consume newline
+            scanner.nextLine(); 
             switch (opcion) {
                 case 1:
                     agregarAnimal(scanner);
@@ -118,18 +118,18 @@ public static void menuPrincipal(Scanner scanner) {
 
         Animal animal;
         switch (tipo) {
-            case "mamifero": // Changed from '->' to ':'
+            case "mamifero": 
                 animal = new Mamifero(id, nombre, consumo, especie);
-                break; // Added 'break;'
+                break; 
             case "ave":
                 animal = new Ave(id, nombre, consumo, especie);
                 break;
             case "reptil":
                 animal = new Reptil(id, nombre, consumo, especie);
                 break;
-            default: // Default case requires a block and assignment if it's an expression
+            default: 
                 System.out.println("Tipo inválido.");
-                return; // Return to prevent further execution if type is invalid
+                return; 
         }
 
         animales[indice++] = animal;
@@ -176,23 +176,123 @@ public static void menuPrincipal(Scanner scanner) {
         System.out.printf("Consumo total diario: %.2f lb\n", total);
     }
 
-    public static void faseII(Scanner scanner) {
-        agregarAnimal(scanner);
-        ordenarArreglo();
-        mostrarArreglo();
+  public static void faseII(Scanner scanner) {
+        int opcionFase2;
+        boolean continuarFase2 = true;
+        do {
+            System.out.println("\nFase 2 - Arreglos:");
+            System.out.println("a: Agregar Mamífero");
+            System.out.println("b: Agregar Ave");
+            System.out.println("c: Agregar Reptil");
+            System.out.println("d: Ordenar Arreglo");
+            System.out.println("e: Mostrar Arreglo");
+            System.out.println("f: Regresar al Menú Principal");
+            System.out.print("Seleccione una opción: ");
+            String opcionStr = scanner.nextLine();
+            if (opcionStr.length() == 1) {
+                opcionFase2 = opcionStr.charAt(0);
+                switch (opcionFase2) {
+                    case 'a':
+                        agregarAnimalFase2(scanner, "Mamífero");
+                        break;
+                    case 'b':
+                        agregarAnimalFase2(scanner, "Ave");
+                        break;
+                    case 'c':
+                        agregarAnimalFase2(scanner, "Reptil");
+                        break;
+                    case 'd':
+                        ordenarArreglo(scanner); // Llamada al método para ordenar
+                        break;
+                    case 'e':
+                        mostrarArreglo();
+                        break;
+                    case 'f':
+                        System.out.println("Regresando al Menú Principal...");
+                        continuarFase2 = false;
+                        break;
+                    default:
+                        System.out.println("Opción no válida.");
+                }
+            } else {
+                System.out.println("Opción no válida.");
+            }
+        } while (continuarFase2);
     }
 
-    public static void ordenarArreglo() {
-        // Ensure that 'animales' array is not null and has enough elements
-        // Also, Comparator.comparingInt(Animal::getIdAnimal) requires Java 8 or higher
-        // If you are strictly on Java 7 or below, you'd need an anonymous inner class for Comparator.
-        Arrays.sort(animales, 0, indice, Comparator.comparingInt(Animal::getIdAnimal));
+    public static void agregarAnimalFase2(Scanner scanner, String tipo) {
+        if (indice >= animales.length) {
+            System.out.println("El array ya está lleno.");
+            return;
+        }
+
+        System.out.print("Ingrese el ID del " + tipo + ": ");
+        int id = scanner.nextInt();
+        while (animalExiste(id)) {
+            System.out.println("El identificador es único para cada animal.");
+            System.out.print("Ingrese el ID del " + tipo + ": ");
+            id = scanner.nextInt();
+        }
+        scanner.nextLine(); // Limpiar buffer
+
+        System.out.print("Ingrese el nombre del " + tipo + ": ");
+        String nombre = scanner.nextLine();
+
+        System.out.print("Ingrese la cantidad de alimento diario (en lb) del " + tipo + ": ");
+        double alimentoDiario = scanner.nextDouble();
+        scanner.nextLine(); // Limpiar buffer
+
+        switch (tipo) {
+            case "Mamífero":
+                animales[indice] = new Mamifero(id, nombre, alimentoDiario, "Carnívoro");
+                break;
+            case "Ave":
+                animales[indice] = new Ave(id, nombre, alimentoDiario, "Granos");
+                break;
+            case "Reptil":
+                animales[indice] = new Reptil(id, nombre, alimentoDiario, "Insectos");
+                break;
+        }
+        indice++;
+        System.out.println(tipo + " agregado exitosamente.");
+
+        System.out.print("¿Desea agregar otro Animal a la lista (si/no)? ");
+        String respuesta = scanner.nextLine().toLowerCase();
+        if (respuesta.equals("si")) {
+            faseII(scanner); // Volver al submenú
+        }
+    }
+
+    public static void ordenarArreglo(Scanner scanner) {
+        if (indice == 0) {
+            System.out.println("No hay animales para ordenar.");
+            return;
+        }
+
+        System.out.print("¿Ordenar de forma (a)scendente o (d)escendente por ID? ");
+        String orden = scanner.nextLine().toLowerCase();
+
+        Comparator<Animal> comparador = Comparator.comparingInt(Animal::getIdAnimal);
+
+        switch (orden) {
+            case "a":
+                Arrays.sort(animales, 0, indice, comparador);
+                System.out.println("Arreglo ordenado ascendentemente por ID.");
+                break;
+            case "d":
+                Arrays.sort(animales, 0, indice, comparador.reversed());
+                System.out.println("Arreglo ordenado descendentemente por ID.");
+                break;
+            default:
+                System.out.println("Opción de ordenamiento no válida.");
+                break;
+        }
     }
 
     public static void mostrarArreglo() {
-        System.out.println("\nAnimales ordenados por ID:");
+        System.out.println("Contenido del arreglo de animales (ID):");
         for (int i = 0; i < indice; i++) {
-            System.out.println(animales[i]);
+            System.out.println("[" + i + "] ID: " + animales[i].getIdAnimal());
         }
     }
 
@@ -213,9 +313,6 @@ public static void menuPrincipal(Scanner scanner) {
                     insertarAnimal(scanner);
                     break;
                 case 2:
-                    // This call `consultarAnimales(scanner);` is problematic.
-                    // The method `consultarAnimales` expects a String 'tipo', not a Scanner.
-                    // You'll need to ask the user for the 'tipo' here.
                     System.out.print("Ingrese el tipo de animal a consultar (ej. mamifero, ave, reptil): ");
                     String tipoConsulta = scanner.nextLine();
                     consultarAnimales(tipoConsulta); // Corrected call
@@ -273,17 +370,16 @@ public static void menuPrincipal(Scanner scanner) {
         }
     }
 
-    public static void consultarAnimales(String tipo) { // Changed parameter from Scanner to String
+    public static void consultarAnimales(String tipo) {
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
-            // Validate 'tipo' to prevent SQL injection or invalid table names
             if (!tipo.equalsIgnoreCase("mamifero") &&
                 !tipo.equalsIgnoreCase("ave") &&
                 !tipo.equalsIgnoreCase("reptil")) {
                 System.out.println("Tipo de animal inválido para consultar. Solo se permiten 'mamifero', 'ave', 'reptil'.");
-                return; // Exit if type is invalid
+                return; 
             }
 
-            String query = "SELECT id, nombre, consumo, especie FROM " + tipo; // Select specific columns for clarity
+            String query = "SELECT id, nombre, consumo, especie FROM " + tipo;
 
             try (java.sql.Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
                 boolean vacio = true;
@@ -298,7 +394,7 @@ public static void menuPrincipal(Scanner scanner) {
                 if (vacio) {
                     System.out.println("No hay registros para el tipo '" + tipo + "'.");
                 }
-                // Explicitly close ResultSet
+
             }
 
         } catch (SQLException e) {
