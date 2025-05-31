@@ -138,15 +138,15 @@ public class Zoologico {
 
     public static void exportarDatos() {
         try {
-            java.io.BufferedWriter writer = new java.io.BufferedWriter(new java.io.FileWriter("animales.csv"));
-            writer.write("ID,Nombre,Especie,ConsumoDiario\n");
-            for (int i = 0; i < indice; i++) {
-                writer.write(animales[i].getIdAnimal() + "," +
-                             animales[i].getNombre() + "," +
-                             animales[i].getEspecie() + "," +
-                             animales[i].getConsumoDiario() + "\n");
+            try (java.io.BufferedWriter writer = new java.io.BufferedWriter(new java.io.FileWriter("animales.csv"))) {
+                writer.write("ID,Nombre,Especie,ConsumoDiario\n");
+                for (int i = 0; i < indice; i++) {
+                    writer.write(animales[i].getIdAnimal() + "," +
+                            animales[i].getNombre() + "," +
+                            animales[i].getEspecie() + "," +
+                            animales[i].getConsumoDiario() + "\n");
+                }
             }
-            writer.close();
             System.out.println("Datos exportados correctamente a 'animales.csv'.");
         } catch (java.io.IOException e) {
             System.out.println("Error al exportar los datos: " + e.getMessage());
@@ -281,7 +281,71 @@ public class Zoologico {
         }
     }
 
-    public static void faseIII() {
-        System.out.println("Fase III");
+   public static void faseIII() {
+        Scanner scanner = new Scanner(System.in);
+        char opcionAnimal;
+        do {
+            System.out.println("\nFase 3 - Base de datos:");
+            System.out.println("a: Trabajar con Mamífero");
+            System.out.println("b: Trabajar con Ave");
+            System.out.println("c: Trabajar con Reptil");
+            System.out.println("d: Regresar al menú principal");
+            System.out.print("Seleccione una opción: ");
+            opcionAnimal = scanner.nextLine().toLowerCase().charAt(0);
+
+            switch (opcionAnimal) {
+                case 'a':
+                    submenuBaseDatos("mamifero");
+                    break;
+                case 'b':
+                    submenuBaseDatos("ave");
+                    break;
+                case 'c':
+                    submenuBaseDatos("reptil");
+                    break;
+                case 'd':
+                    System.out.println("Regresando al menú principal...");
+                    break;
+                default:
+                    System.out.println("Opción no válida.");
+            }
+        } while (opcionAnimal != 'd');
     }
+
+    public static void submenuBaseDatos(String tipoAnimal) {
+        Scanner scanner = new Scanner(System.in);
+        char opcion;
+        do {
+            System.out.println("\nSubmenú - " + tipoAnimal.toUpperCase());
+            System.out.println("C: Insertar");
+            System.out.println("R: Consultar");
+            System.out.println("U: Actualizar");
+            System.out.println("D: Eliminar");
+            System.out.println("X: Regresar");
+            System.out.print("Seleccione una opción: ");
+            opcion = scanner.nextLine().toUpperCase().charAt(0);
+
+            switch (opcion) {
+                case 'C':
+                    System.out.println("[Insertar] Lógica de inserción en BD para " + tipoAnimal);
+                    break;
+                case 'R':
+                    System.out.println("[Consultar] Lógica de consulta en BD para " + tipoAnimal);
+                    break;
+                case 'U':
+                    System.out.println("[Actualizar] Lógica de actualización en BD para " + tipoAnimal);
+                    break;
+                case 'D':
+                    System.out.println("[Eliminar] Lógica de eliminación en BD para " + tipoAnimal);
+                    break;
+                case 'X':
+                    System.out.println("Regresando al submenú principal...");
+                    break;
+                default:
+                    System.out.println("Opción no válida.");
+            }
+        } while (opcion != 'X');
+    }
+
+    
 }
