@@ -1,62 +1,72 @@
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Scanner;
-import java.sql.Connection;
 
 public class Zoologico {
     private static final Animal[] animales = new Animal[10];
     private static int indice = 0;
+
+    private static final String URL = "jdbc:mysql://localhost:3306/zoologico";
+    private static final String USER = "root";
+    private static final String PASSWORD = ""; 
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         menuPrincipal(scanner);
     }
 
-    public static void menuPrincipal(Scanner scanner) {
+public static void menuPrincipal(Scanner scanner) {
         int opcion;
         do {
-            System.out.println("Menú Principal:");
-            System.out.println("1. Zoo");
-            System.out.println("2. Fase 2 - Arreglos");
+            System.out.println("\n\n------ Menú Principal ------");
+            System.out.println("1. Fase I");
+            System.out.println("2. Fase II");
             System.out.println("3. Fase III");
-            System.out.println("4. Salir");
+            System.out.println("0. Salir");
             System.out.print("Seleccione una opción: ");
             opcion = scanner.nextInt();
-            scanner.nextLine(); // Limpiar buffer
-
+            scanner.nextLine(); // consume newline
             switch (opcion) {
-                case 1:
+                case 1: // Changed from '->' to ':'
                     menuZoo(scanner);
-                    break;
+                    break; // Added 'break;'
                 case 2:
                     faseII(scanner);
                     break;
                 case 3:
-                    faseIII();
+                    faseIII(scanner);
                     break;
-                case 4:
-                    System.out.println("¡Hasta luego!");
+                case 0:
+                    System.out.println("Saliendo del programa...");
                     break;
                 default:
-                    System.out.println("Opción no válida.");
+                    System.out.println("Opción inválida. Intente de nuevo.");
+                    break;
             }
-        } while (opcion != 4);
+        } while (opcion != 0);
     }
 
     public static void menuZoo(Scanner scanner) {
-        int opcionZoo;
+        int opcion;
         do {
-            System.out.println("\nMenú del Zoológico:");
-            System.out.println("1. Agregar nuevo animal");
-            System.out.println("2. Ver todos los animales");
+            System.out.println("\n\n------ Menú Zoológico (Fase I) ------");
+            System.out.println("1. Agregar animal");
+            System.out.println("2. Ver animales");
             System.out.println("3. Exportar datos a CSV");
-            System.out.println("4. Calcular consumo de alimento en x días");
-            System.out.println("5. Regresar al Menú Principal");
+            System.out.println("4. Calcular consumo total");
+            System.out.println("0. Volver al menú principal");
             System.out.print("Seleccione una opción: ");
-            opcionZoo = scanner.nextInt();
-            scanner.nextLine(); // Limpiar buffer
-
-            switch (opcionZoo) {
+            opcion = scanner.nextInt();
+            scanner.nextLine(); // consume newline
+            switch (opcion) {
                 case 1:
                     agregarAnimal(scanner);
                     break;
@@ -67,57 +77,62 @@ public class Zoologico {
                     exportarDatos();
                     break;
                 case 4:
-                    calcularConsumo(scanner);
+                    calcularConsumo();
                     break;
-                case 5:
-                    System.out.println("Regresando al Menú Principal...");
+                case 0:
+                    System.out.println("Volviendo al menú principal...");
                     break;
                 default:
-                    System.out.println("Opción no válida.");
+                    System.out.println("Opción inválida. Intente de nuevo.");
+                    break;
             }
-        } while (opcionZoo != 5);
+        } while (opcion != 0);
     }
 
     public static void agregarAnimal(Scanner scanner) {
         if (indice >= animales.length) {
-            System.out.println("El array ya está lleno.");
+            System.out.println("No se pueden agregar más animales. Límite alcanzado.");
             return;
         }
 
-        System.out.print("Ingrese el ID del animal: ");
+        System.out.print("ID del animal: ");
         int id = scanner.nextInt();
-        while (animalExiste(id)) {
-            System.out.println("El identificador es único para cada animal.");
-            System.out.print("Ingrese el ID del animal: ");
-            id = scanner.nextInt();
+        scanner.nextLine();
+        if (animalExiste(id)) {
+            System.out.println("Ya existe un animal con ese ID.");
+            return;
         }
 
-        scanner.nextLine(); // Limpiar buffer
-        System.out.print("Ingrese el nombre del animal: ");
+        System.out.print("Nombre del animal: ");
         String nombre = scanner.nextLine();
 
-        System.out.print("Ingrese el tipo de animal (1: Mamífero, 2: Ave, 3: Reptil): ");
-        int tipo = scanner.nextInt();
+        System.out.print("Consumo diario (lb): ");
+        double consumo = scanner.nextDouble();
+        scanner.nextLine();
 
-        System.out.print("Ingrese la cantidad de alimento diario (en lb): ");
-        double alimentoDiario = scanner.nextDouble();
+        System.out.print("Especie: ");
+        String especie = scanner.nextLine();
 
+        System.out.print("Tipo (mamifero/ave/reptil): ");
+        String tipo = scanner.nextLine().toLowerCase();
+
+        Animal animal;
         switch (tipo) {
-            case 1:
-                animales[indice] = new Mamifero(id, nombre, alimentoDiario, "Carnívoro");
+            case "mamifero": // Changed from '->' to ':'
+                animal = new Mamifero(id, nombre, consumo, especie);
+                break; // Added 'break;'
+            case "ave":
+                animal = new Ave(id, nombre, consumo, especie);
                 break;
-            case 2:
-                animales[indice] = new Ave(id, nombre, alimentoDiario, "Granos");
+            case "reptil":
+                animal = new Reptil(id, nombre, consumo, especie);
                 break;
-            case 3:
-                animales[indice] = new Reptil(id, nombre, alimentoDiario, "Insectos");
-                break;
-            default:
-                System.out.println("Tipo no válido.");
-                return;
+            default: // Default case requires a block and assignment if it's an expression
+                System.out.println("Tipo inválido.");
+                return; // Return to prevent further execution if type is invalid
         }
 
-        indice++;
+        animales[indice++] = animal;
         System.out.println("Animal agregado exitosamente.");
     }
 
@@ -131,221 +146,228 @@ public class Zoologico {
     }
 
     public static void verAnimales() {
-        System.out.println("Animales registrados:");
+        if (indice == 0) {
+            System.out.println("No hay animales registrados.");
+            return;
+        }
         for (int i = 0; i < indice; i++) {
-            System.out.println(animales[i].toString());
+            System.out.println(animales[i]);
         }
     }
 
     public static void exportarDatos() {
-        try {
-            try (java.io.BufferedWriter writer = new java.io.BufferedWriter(new java.io.FileWriter("animales.csv"))) {
-                writer.write("ID,Nombre,Especie,ConsumoDiario\n");
-                for (int i = 0; i < indice; i++) {
-                    writer.write(animales[i].getIdAnimal() + "," +
-                            animales[i].getNombre() + "," +
-                            animales[i].getEspecie() + "," +
-                            animales[i].getConsumoDiario() + "\n");
-                }
+        try (PrintWriter writer = new PrintWriter(new File("animales.csv"))) {
+            writer.println("ID,Nombre,Consumo,Especie,Tipo");
+            for (int i = 0; i < indice; i++) {
+                Animal a = animales[i];
+                writer.printf("%d,%s,%.2f,%s,%s\n", a.getIdAnimal(), a.getNombre(), a.getConsumoDiario(), a.getEspecie(), a.getClass().getSimpleName());
             }
-            System.out.println("Datos exportados correctamente a 'animales.csv'.");
-        } catch (java.io.IOException e) {
-            System.out.println("Error al exportar los datos: " + e.getMessage());
+            System.out.println("Datos exportados a animales.csv exitosamente.");
+        } catch (IOException e) {
+            System.out.println("Error al exportar datos: " + e.getMessage());
         }
     }
 
-    public static void calcularConsumo(Scanner scanner) {
-        System.out.print("Ingrese el número de días para calcular el consumo: ");
-        int dias = scanner.nextInt();
-
-        double totalConsumo = 0;
+    public static void calcularConsumo() {
+        double total = 0;
         for (int i = 0; i < indice; i++) {
-            totalConsumo += animales[i].getConsumoDiario() * dias;
+            total += animales[i].getConsumoDiario();
         }
-
-        System.out.println("Consumo total de alimento para " + dias + " días: " + totalConsumo + " lb.");
+        System.out.printf("Consumo total diario: %.2f lb\n", total);
     }
 
     public static void faseII(Scanner scanner) {
-        int opcionFase2;
-        boolean continuarFase2 = true;
-        do {
-            System.out.println("\nFase 2 - Arreglos:");
-            System.out.println("a: Agregar Mamífero");
-            System.out.println("b: Agregar Ave");
-            System.out.println("c: Agregar Reptil");
-            System.out.println("d: Ordenar Arreglo");
-            System.out.println("e: Mostrar Arreglo");
-            System.out.println("f: Regresar al Menú Principal");
-            System.out.print("Seleccione una opción: ");
-            String opcionStr = scanner.nextLine();
-            if (opcionStr.length() == 1) {
-                opcionFase2 = opcionStr.charAt(0);
-                switch (opcionFase2) {
-                    case 'a':
-                        agregarAnimalFase2(scanner, "Mamífero");
-                        break;
-                    case 'b':
-                        agregarAnimalFase2(scanner, "Ave");
-                        break;
-                    case 'c':
-                        agregarAnimalFase2(scanner, "Reptil");
-                        break;
-                    case 'd':
-                        ordenarArreglo(scanner); // Llamada al método para ordenar
-                        break;
-                    case 'e':
-                        mostrarArreglo();
-                        break;
-                    case 'f':
-                        System.out.println("Regresando al Menú Principal...");
-                        continuarFase2 = false;
-                        break;
-                    default:
-                        System.out.println("Opción no válida.");
-                }
-            } else {
-                System.out.println("Opción no válida.");
-            }
-        } while (continuarFase2);
+        agregarAnimal(scanner);
+        ordenarArreglo();
+        mostrarArreglo();
     }
 
-    public static void agregarAnimalFase2(Scanner scanner, String tipo) {
-        if (indice >= animales.length) {
-            System.out.println("El array ya está lleno.");
-            return;
-        }
-
-        System.out.print("Ingrese el ID del " + tipo + ": ");
-        int id = scanner.nextInt();
-        while (animalExiste(id)) {
-            System.out.println("El identificador es único para cada animal.");
-            System.out.print("Ingrese el ID del " + tipo + ": ");
-            id = scanner.nextInt();
-        }
-        scanner.nextLine(); // Limpiar buffer
-
-        System.out.print("Ingrese el nombre del " + tipo + ": ");
-        String nombre = scanner.nextLine();
-
-        System.out.print("Ingrese la cantidad de alimento diario (en lb) del " + tipo + ": ");
-        double alimentoDiario = scanner.nextDouble();
-        scanner.nextLine(); // Limpiar buffer
-
-        switch (tipo) {
-            case "Mamífero":
-                animales[indice] = new Mamifero(id, nombre, alimentoDiario, "Carnívoro");
-                break;
-            case "Ave":
-                animales[indice] = new Ave(id, nombre, alimentoDiario, "Granos");
-                break;
-            case "Reptil":
-                animales[indice] = new Reptil(id, nombre, alimentoDiario, "Insectos");
-                break;
-        }
-        indice++;
-        System.out.println(tipo + " agregado exitosamente.");
-
-        System.out.print("¿Desea agregar otro Animal a la lista (si/no)? ");
-        String respuesta = scanner.nextLine().toLowerCase();
-        if (respuesta.equals("si")) {
-            faseII(scanner); // Volver al submenú
-        }
-    }
-
-    public static void ordenarArreglo(Scanner scanner) {
-        if (indice == 0) {
-            System.out.println("No hay animales para ordenar.");
-            return;
-        }
-
-        System.out.print("¿Ordenar de forma (a)scendente o (d)escendente por ID? ");
-        String orden = scanner.nextLine().toLowerCase();
-
-        Comparator<Animal> comparador = Comparator.comparingInt(Animal::getIdAnimal);
-
-        if (orden.equals("a")) {
-            Arrays.sort(animales, 0, indice, comparador);
-            System.out.println("Arreglo ordenado ascendentemente por ID.");
-        } else if (orden.equals("d")) {
-            Arrays.sort(animales, 0, indice, comparador.reversed());
-            System.out.println("Arreglo ordenado descendentemente por ID.");
-        } else {
-            System.out.println("Opción de ordenamiento no válida.");
-        }
+    public static void ordenarArreglo() {
+        // Ensure that 'animales' array is not null and has enough elements
+        // Also, Comparator.comparingInt(Animal::getIdAnimal) requires Java 8 or higher
+        // If you are strictly on Java 7 or below, you'd need an anonymous inner class for Comparator.
+        Arrays.sort(animales, 0, indice, Comparator.comparingInt(Animal::getIdAnimal));
     }
 
     public static void mostrarArreglo() {
-        System.out.println("Contenido del arreglo de animales (ID):");
+        System.out.println("\nAnimales ordenados por ID:");
         for (int i = 0; i < indice; i++) {
-            System.out.println("[" + i + "] ID: " + animales[i].getIdAnimal());
+            System.out.println(animales[i]);
         }
     }
 
-    public static void faseIII() {
-        Scanner scanner = new Scanner(System.in);
-        char opcionAnimal;
+    public static void faseIII(Scanner scanner) {
+        int opcion;
         do {
-            System.out.println("\nFase 3 - Base de datos:");
-            System.out.println("a: Trabajar con Mamífero");
-            System.out.println("b: Trabajar con Ave");
-            System.out.println("c: Trabajar con Reptil");
-            System.out.println("d: Regresar al menú principal");
+            System.out.println("\n------ Fase III (Base de Datos) ------");
+            System.out.println("1. Insertar animal");
+            System.out.println("2. Consultar animales");
+            System.out.println("3. Actualizar animal");
+            System.out.println("4. Eliminar animal");
+            System.out.println("0. Volver al menú principal");
             System.out.print("Seleccione una opción: ");
-            opcionAnimal = scanner.nextLine().toLowerCase().charAt(0);
-
-            switch (opcionAnimal) {
-                case 'a':
-                    submenuBaseDatos("mamifero");
-                    break;
-                case 'b':
-                    submenuBaseDatos("ave");
-                    break;
-                case 'c':
-                    submenuBaseDatos("reptil");
-                    break;
-                case 'd':
-                    System.out.println("Regresando al menú principal...");
-                    break;
-                default:
-                    System.out.println("Opción no válida.");
-            }
-        } while (opcionAnimal != 'd');
-    }
-
-    public static void submenuBaseDatos(String tipoAnimal) {
-        Scanner scanner = new Scanner(System.in);
-        char opcion;
-        do {
-            System.out.println("\nSubmenú - " + tipoAnimal.toUpperCase());
-            System.out.println("C: Insertar");
-            System.out.println("R: Consultar");
-            System.out.println("U: Actualizar");
-            System.out.println("D: Eliminar");
-            System.out.println("X: Regresar");
-            System.out.print("Seleccione una opción: ");
-            opcion = scanner.nextLine().toUpperCase().charAt(0);
-
+            opcion = scanner.nextInt();
+            scanner.nextLine();
             switch (opcion) {
-                case 'C':
-                    System.out.println("[Insertar] Lógica de inserción en BD para " + tipoAnimal);
+                case 1:
+                    insertarAnimal(scanner);
                     break;
-                case 'R':
-                    System.out.println("[Consultar] Lógica de consulta en BD para " + tipoAnimal);
+                case 2:
+                    // This call `consultarAnimales(scanner);` is problematic.
+                    // The method `consultarAnimales` expects a String 'tipo', not a Scanner.
+                    // You'll need to ask the user for the 'tipo' here.
+                    System.out.print("Ingrese el tipo de animal a consultar (ej. mamifero, ave, reptil): ");
+                    String tipoConsulta = scanner.nextLine();
+                    consultarAnimales(tipoConsulta); // Corrected call
                     break;
-                case 'U':
-                    System.out.println("[Actualizar] Lógica de actualización en BD para " + tipoAnimal);
+                case 3:
+                    actualizarAnimal(scanner);
                     break;
-                case 'D':
-                    System.out.println("[Eliminar] Lógica de eliminación en BD para " + tipoAnimal);
+                case 4:
+                    eliminarAnimal(scanner);
                     break;
-                case 'X':
-                    System.out.println("Regresando al submenú principal...");
+                case 0:
+                    System.out.println("Volviendo al menú principal...");
                     break;
                 default:
-                    System.out.println("Opción no válida.");
+                    System.out.println("Opción inválida.");
+                    break;
             }
-        } while (opcion != 'X');
+        } while (opcion != 0);
     }
 
+    public static void insertarAnimal(Scanner scanner) {
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
+            System.out.print("ID del animal: ");
+            int id = scanner.nextInt();
+            scanner.nextLine();
+            System.out.print("Nombre: ");
+            String nombre = scanner.nextLine();
+            System.out.print("Consumo: ");
+            double consumo = scanner.nextDouble();
+            scanner.nextLine();
+            System.out.print("Especie: ");
+            String especie = scanner.nextLine();
+            System.out.print("Tipo (mamifero/ave/reptil): ");
+            String tipo = scanner.nextLine();
+
+            // Validate 'tipo' to prevent SQL injection or invalid table names
+            if (!tipo.equalsIgnoreCase("mamifero") &&
+                !tipo.equalsIgnoreCase("ave") &&
+                !tipo.equalsIgnoreCase("reptil")) {
+                System.out.println("Tipo de animal inválido. Solo se permiten 'mamifero', 'ave', 'reptil'.");
+                return; // Exit if type is invalid
+            }
+
+            String query = "INSERT INTO " + tipo + " (id, nombre, consumo, especie) VALUES (?, ?, ?, ?)";
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setInt(1, id);
+            ps.setString(2, nombre);
+            ps.setDouble(3, consumo);
+            ps.setString(4, especie);
+
+            ps.executeUpdate();
+            System.out.println("Animal insertado exitosamente en la base de datos.");
+        } catch (SQLException e) {
+            System.out.println("Error al insertar: " + e.getMessage());
+        }
+    }
+
+    public static void consultarAnimales(String tipo) { // Changed parameter from Scanner to String
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
+            // Validate 'tipo' to prevent SQL injection or invalid table names
+            if (!tipo.equalsIgnoreCase("mamifero") &&
+                !tipo.equalsIgnoreCase("ave") &&
+                !tipo.equalsIgnoreCase("reptil")) {
+                System.out.println("Tipo de animal inválido para consultar. Solo se permiten 'mamifero', 'ave', 'reptil'.");
+                return; // Exit if type is invalid
+            }
+
+            String query = "SELECT id, nombre, consumo, especie FROM " + tipo; // Select specific columns for clarity
+
+            try (java.sql.Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
+                boolean vacio = true;
+                System.out.println("\n--- Animales de tipo '" + tipo + "' ---");
+                while (rs.next()) {
+                    vacio = false;
+                    System.out.println("ID: " + rs.getInt("id") +
+                                        ", Nombre: " + rs.getString("nombre") +
+                                        ", Consumo: " + rs.getDouble("consumo") +
+                                        ", Especie: " + rs.getString("especie"));
+                }
+                if (vacio) {
+                    System.out.println("No hay registros para el tipo '" + tipo + "'.");
+                }
+                // Explicitly close ResultSet
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error al consultar: " + e.getMessage());
+        }
+    }
+
+    public static void actualizarAnimal(Scanner scanner) {
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
+            System.out.print("Tipo de animal (mamifero/ave/reptil): ");
+            String tipo = scanner.nextLine();
+            // Validate 'tipo'
+            if (!tipo.equalsIgnoreCase("mamifero") &&
+                !tipo.equalsIgnoreCase("ave") &&
+                !tipo.equalsIgnoreCase("reptil")) {
+                System.out.println("Tipo de animal inválido. Solo se permiten 'mamifero', 'ave', 'reptil'.");
+                return;
+            }
+
+            System.out.print("ID del animal a actualizar: ");
+            int id = scanner.nextInt();
+            scanner.nextLine();
+            System.out.print("Nuevo nombre: ");
+            String nombre = scanner.nextLine();
+
+            String query = "UPDATE " + tipo + " SET nombre = ? WHERE id = ?";
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, nombre);
+            ps.setInt(2, id);
+
+            int rowsAffected = ps.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Animal actualizado correctamente.");
+            } else {
+                System.out.println("No se encontró ningún animal con ese ID en la tabla '" + tipo + "'.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al actualizar: " + e.getMessage());
+        }
+    }
+
+    public static void eliminarAnimal(Scanner scanner) {
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
+            System.out.print("Tipo de animal (mamifero/ave/reptil): ");
+            String tipo = scanner.nextLine();
+            // Validate 'tipo'
+            if (!tipo.equalsIgnoreCase("mamifero") &&
+                !tipo.equalsIgnoreCase("ave") &&
+                !tipo.equalsIgnoreCase("reptil")) {
+                System.out.println("Tipo de animal inválido. Solo se permiten 'mamifero', 'ave', 'reptil'.");
+                return;
+            }
+
+            System.out.print("ID del animal a eliminar: ");
+            int id = scanner.nextInt();
+            scanner.nextLine();
+
+            String query = "DELETE FROM " + tipo + " WHERE id = ?";
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setInt(1, id);
+
+            int rowsAffected = ps.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Animal eliminado correctamente.");
+            } else {
+                System.out.println("No se encontró ningún animal con ese ID en la tabla '" + tipo + "'.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al eliminar: " + e.getMessage());
+        }
+    }
 }
