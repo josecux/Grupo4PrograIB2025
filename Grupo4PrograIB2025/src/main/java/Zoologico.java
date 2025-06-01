@@ -16,14 +16,14 @@ public class Zoologico {
 
     private static final String URL = "jdbc:mysql://localhost:3306/zoologico";
     private static final String USER = "root";
-    private static final String PASSWORD = ""; 
+    private static final String PASSWORD = "";
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         menuPrincipal(scanner);
     }
 
-public static void menuPrincipal(Scanner scanner) {
+    public static void menuPrincipal(Scanner scanner) {
         int opcion;
         do {
             System.out.println("\n\n------ Menú Principal ------");
@@ -33,13 +33,24 @@ public static void menuPrincipal(Scanner scanner) {
             System.out.println("0. Salir");
             System.out.print("Seleccione una opción: ");
             opcion = scanner.nextInt();
-            scanner.nextLine(); 
+            scanner.nextLine();
+
             switch (opcion) {
-                case 1 -> menuZoo(scanner);
-                case 2 -> faseII(scanner);
-                case 3 -> faseIII(scanner);
-                case 0 -> System.out.println("Saliendo del programa...");
-                default -> System.out.println("Opción inválida. Intente de nuevo.");
+                case 1:
+                    menuZoo(scanner);
+                    break;
+                case 2:
+                    faseII(scanner);
+                    break;
+                case 3:
+                    faseIII(scanner);
+                    break;
+                case 0:
+                    System.out.println("Saliendo del programa...");
+                    break;
+                default:
+                    System.out.println("Opción inválida. Intente de nuevo.");
+                    break;
             }
         } while (opcion != 0);
     }
@@ -55,14 +66,27 @@ public static void menuPrincipal(Scanner scanner) {
             System.out.println("0. Volver al menú principal");
             System.out.print("Seleccione una opción: ");
             opcion = scanner.nextInt();
-            scanner.nextLine(); 
+            scanner.nextLine();
+
             switch (opcion) {
-                case 1 -> agregarAnimal(scanner);
-                case 2 -> verAnimales();
-                case 3 -> exportarDatos();
-                case 4 -> calcularConsumo();
-                case 0 -> System.out.println("Volviendo al menú principal...");
-                default -> System.out.println("Opción inválida. Intente de nuevo.");
+                case 1:
+                    agregarAnimal(scanner);
+                    break;
+                case 2:
+                    verAnimales();
+                    break;
+                case 3:
+                    exportarDatos();
+                    break;
+                case 4:
+                    calcularConsumo();
+                    break;
+                case 0:
+                    System.out.println("Volviendo al menú principal...");
+                    break;
+                default:
+                    System.out.println("Opción inválida. Intente de nuevo.");
+                    break;
             }
         } while (opcion != 0);
     }
@@ -96,13 +120,18 @@ public static void menuPrincipal(Scanner scanner) {
 
         Animal animal;
         switch (tipo) {
-            case "mamifero" -> animal = new Mamifero(id, nombre, consumo, especie);
-            case "ave" -> animal = new Ave(id, nombre, consumo, especie);
-            case "reptil" -> animal = new Reptil(id, nombre, consumo, especie);
-            default -> { 
+            case "mamifero":
+                animal = new Mamifero(id, nombre, consumo, especie);
+                break;
+            case "ave":
+                animal = new Ave(id, nombre, consumo, especie);
+                break;
+            case "reptil":
+                animal = new Reptil(id, nombre, consumo, especie);
+                break;
+            default:
                 System.out.println("Tipo inválido.");
-                return; 
-            }
+                return;
         }
 
         animales[indice++] = animal;
@@ -150,20 +179,30 @@ public static void menuPrincipal(Scanner scanner) {
     }
 
     public static void faseII(Scanner scanner) {
-        agregarAnimal(scanner);
+        // This method currently only adds one animal, sorts, and displays.
+        // If you intended a loop for Phase II, you would add it here.
+        System.out.println("\n------ Fase II (Ordenamiento de Arreglo de Animales) ------");
+        System.out.println("Nota: Esta sección agregará un animal, lo ordenará y mostrará el arreglo.");
+        agregarAnimal(scanner); // Reusing existing add animal method
         ordenarArreglo();
         mostrarArreglo();
     }
 
     public static void ordenarArreglo() {
         Arrays.sort(animales, 0, indice, Comparator.comparingInt(Animal::getIdAnimal));
+        System.out.println("Arreglo ordenado por ID.");
     }
 
     public static void mostrarArreglo() {
-        System.out.println("\nAnimales ordenados por ID:");
+        System.out.println("\n--- Animales en el arreglo ---");
+        if (indice == 0) {
+            System.out.println("El arreglo de animales está vacío.");
+            return;
+        }
         for (int i = 0; i < indice; i++) {
             System.out.println(animales[i]);
         }
+        System.out.println("------------------------------");
     }
 
     public static void faseIII(Scanner scanner) {
@@ -179,16 +218,26 @@ public static void menuPrincipal(Scanner scanner) {
             opcion = scanner.nextInt();
             scanner.nextLine();
             switch (opcion) {
-                case 1 -> insertarAnimal(scanner);
-                case 2 -> {
+                case 1:
+                    insertarAnimal(scanner);
+                    break;
+                case 2:
                     System.out.print("Ingrese el tipo de animal a consultar (ej. mamifero, ave, reptil): ");
                     String tipoConsulta = scanner.nextLine();
                     consultarAnimales(tipoConsulta);
-                }
-                case 3 -> actualizarAnimal(scanner);
-                case 4 -> eliminarAnimal(scanner);
-                case 0 -> System.out.println("Volviendo al menú principal...");
-                default -> System.out.println("Opción inválida.");
+                    break;
+                case 3:
+                    actualizarAnimal(scanner);
+                    break;
+                case 4:
+                    eliminarAnimal(scanner);
+                    break;
+                case 0:
+                    System.out.println("Volviendo al menú principal...");
+                    break;
+                default:
+                    System.out.println("Opción inválida.");
+                    break;
             }
         } while (opcion != 0);
     }
@@ -206,15 +255,27 @@ public static void menuPrincipal(Scanner scanner) {
             System.out.print("Especie: ");
             String especie = scanner.nextLine();
             System.out.print("Tipo (mamifero/ave/reptil): ");
-            String tipo = scanner.nextLine();
+            String tipo = scanner.nextLine().toLowerCase(); // Convert to lowercase for consistent comparison
 
 
-            if (!tipo.equalsIgnoreCase("mamifero") &&
-                !tipo.equalsIgnoreCase("ave") &&
-                !tipo.equalsIgnoreCase("reptil")) {
+            if (!tipo.equals("mamifero") &&
+                !tipo.equals("ave") &&
+                !tipo.equals("reptil")) {
                 System.out.println("Tipo de animal inválido. Solo se permiten 'mamifero', 'ave', 'reptil'.");
-                return; 
+                return;
             }
+
+            // Check if animal with ID already exists in the specific table
+            String checkQuery = "SELECT COUNT(*) FROM " + tipo + " WHERE id = ?";
+            try (PreparedStatement checkPs = conn.prepareStatement(checkQuery)) {
+                checkPs.setInt(1, id);
+                ResultSet rs = checkPs.executeQuery();
+                if (rs.next() && rs.getInt(1) > 0) {
+                    System.out.println("Error: Ya existe un animal con el ID " + id + " en la tabla '" + tipo + "'.");
+                    return;
+                }
+            }
+
 
             String query = "INSERT INTO " + tipo + " (id, nombre, consumo, especie) VALUES (?, ?, ?, ?)";
             PreparedStatement ps = conn.prepareStatement(query);
@@ -230,17 +291,17 @@ public static void menuPrincipal(Scanner scanner) {
         }
     }
 
-    public static void consultarAnimales(String tipo) { 
+    public static void consultarAnimales(String tipo) {
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
 
             if (!tipo.equalsIgnoreCase("mamifero") &&
                 !tipo.equalsIgnoreCase("ave") &&
                 !tipo.equalsIgnoreCase("reptil")) {
                 System.out.println("Tipo de animal inválido para consultar. Solo se permiten 'mamifero', 'ave', 'reptil'.");
-                return; 
+                return;
             }
 
-            String query = "SELECT id, nombre, consumo, especie FROM " + tipo; 
+            String query = "SELECT id, nombre, consumo, especie FROM " + tipo;
 
             try (java.sql.Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
                 boolean vacio = true;
@@ -266,11 +327,12 @@ public static void menuPrincipal(Scanner scanner) {
     public static void actualizarAnimal(Scanner scanner) {
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
             System.out.print("Tipo de animal (mamifero/ave/reptil): ");
-            String tipo = scanner.nextLine();
+            String tipo = scanner.nextLine().toLowerCase(); // Convert to lowercase
+
             // Validate 'tipo'
-            if (!tipo.equalsIgnoreCase("mamifero") &&
-                !tipo.equalsIgnoreCase("ave") &&
-                !tipo.equalsIgnoreCase("reptil")) {
+            if (!tipo.equals("mamifero") &&
+                !tipo.equals("ave") &&
+                !tipo.equals("reptil")) {
                 System.out.println("Tipo de animal inválido. Solo se permiten 'mamifero', 'ave', 'reptil'.");
                 return;
             }
@@ -278,19 +340,64 @@ public static void menuPrincipal(Scanner scanner) {
             System.out.print("ID del animal a actualizar: ");
             int id = scanner.nextInt();
             scanner.nextLine();
-            System.out.print("Nuevo nombre: ");
-            String nombre = scanner.nextLine();
 
-            String query = "UPDATE " + tipo + " SET nombre = ? WHERE id = ?";
-            PreparedStatement ps = conn.prepareStatement(query);
-            ps.setString(1, nombre);
-            ps.setInt(2, id);
+            // Fetch current data to display to the user
+            String selectQuery = "SELECT nombre, consumo, especie FROM " + tipo + " WHERE id = ?";
+            String currentNombre = "";
+            double currentConsumo = 0.0;
+            String currentEspecie = "";
+            boolean found = false;
+
+            try (PreparedStatement selectPs = conn.prepareStatement(selectQuery)) {
+                selectPs.setInt(1, id);
+                ResultSet rs = selectPs.executeQuery();
+                if (rs.next()) {
+                    currentNombre = rs.getString("nombre");
+                    currentConsumo = rs.getDouble("consumo");
+                    currentEspecie = rs.getString("especie");
+                    found = true;
+                }
+            }
+
+            if (!found) {
+                System.out.println("No se encontró ningún animal con el ID " + id + " en la tabla '" + tipo + "'.");
+                return;
+            }
+
+            System.out.println("Datos actuales: Nombre: " + currentNombre + ", Consumo: " + currentConsumo + ", Especie: " + currentEspecie);
+
+            System.out.print("Nuevo nombre (dejar en blanco para no cambiar): ");
+            String nuevoNombre = scanner.nextLine();
+            if (nuevoNombre.isEmpty()) {
+                nuevoNombre = currentNombre; // Use current name if blank
+            }
+
+            System.out.print("Nuevo consumo diario (lb) (ingrese 0 para no cambiar): ");
+            double nuevoConsumo = scanner.nextDouble();
+            scanner.nextLine(); // Consume newline
+            if (nuevoConsumo == 0) {
+                nuevoConsumo = currentConsumo; // Use current consumption if 0
+            }
+
+            System.out.print("Nueva especie (dejar en blanco para no cambiar): ");
+            String nuevaEspecie = scanner.nextLine();
+            if (nuevaEspecie.isEmpty()) {
+                nuevaEspecie = currentEspecie; // Use current species if blank
+            }
+
+            String updateQuery = "UPDATE " + tipo + " SET nombre = ?, consumo = ?, especie = ? WHERE id = ?";
+            PreparedStatement ps = conn.prepareStatement(updateQuery);
+            ps.setString(1, nuevoNombre);
+            ps.setDouble(2, nuevoConsumo);
+            ps.setString(3, nuevaEspecie);
+            ps.setInt(4, id);
 
             int rowsAffected = ps.executeUpdate();
             if (rowsAffected > 0) {
                 System.out.println("Animal actualizado correctamente.");
             } else {
-                System.out.println("No se encontró ningún animal con ese ID en la tabla '" + tipo + "'.");
+                // This case should ideally not be reached if 'found' was true
+                System.out.println("No se pudo actualizar el animal. Verifique el ID y tipo.");
             }
         } catch (SQLException e) {
             System.out.println("Error al actualizar: " + e.getMessage());
@@ -300,11 +407,12 @@ public static void menuPrincipal(Scanner scanner) {
     public static void eliminarAnimal(Scanner scanner) {
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
             System.out.print("Tipo de animal (mamifero/ave/reptil): ");
-            String tipo = scanner.nextLine();
+            String tipo = scanner.nextLine().toLowerCase(); // Convert to lowercase
+
             // Validate 'tipo'
-            if (!tipo.equalsIgnoreCase("mamifero") &&
-                !tipo.equalsIgnoreCase("ave") &&
-                !tipo.equalsIgnoreCase("reptil")) {
+            if (!tipo.equals("mamifero") &&
+                !tipo.equals("ave") &&
+                !tipo.equals("reptil")) {
                 System.out.println("Tipo de animal inválido. Solo se permiten 'mamifero', 'ave', 'reptil'.");
                 return;
             }
@@ -312,6 +420,30 @@ public static void menuPrincipal(Scanner scanner) {
             System.out.print("ID del animal a eliminar: ");
             int id = scanner.nextInt();
             scanner.nextLine();
+
+            // Optional: Confirm with the user before deleting
+            String selectQuery = "SELECT nombre FROM " + tipo + " WHERE id = ?";
+            String animalName = null;
+            try (PreparedStatement selectPs = conn.prepareStatement(selectQuery)) {
+                selectPs.setInt(1, id);
+                ResultSet rs = selectPs.executeQuery();
+                if (rs.next()) {
+                    animalName = rs.getString("nombre");
+                }
+            }
+
+            if (animalName == null) {
+                System.out.println("No se encontró ningún animal con el ID " + id + " en la tabla '" + tipo + "'.");
+                return;
+            }
+
+            System.out.print("¿Está seguro de eliminar a '" + animalName + "' (ID: " + id + ") de la tabla '" + tipo + "'? (S/N): ");
+            String confirmacion = scanner.nextLine().toUpperCase();
+            if (!confirmacion.equals("S")) {
+                System.out.println("Operación de eliminación cancelada.");
+                return;
+            }
+
 
             String query = "DELETE FROM " + tipo + " WHERE id = ?";
             PreparedStatement ps = conn.prepareStatement(query);
@@ -321,6 +453,7 @@ public static void menuPrincipal(Scanner scanner) {
             if (rowsAffected > 0) {
                 System.out.println("Animal eliminado correctamente.");
             } else {
+                // This case should ideally not be reached if animalName was found
                 System.out.println("No se encontró ningún animal con ese ID en la tabla '" + tipo + "'.");
             }
         } catch (SQLException e) {
