@@ -315,7 +315,7 @@ public static void menuPrincipal(Scanner scanner) {
                 case 2:
                     System.out.print("Ingrese el tipo de animal a consultar (ej. mamifero, ave, reptil): ");
                     String tipoConsulta = scanner.nextLine();
-                    consultarAnimales(tipoConsulta); // Corrected call
+                    consultarAnimales(tipoConsulta); 
                     break;
                 case 3:
                     actualizarAnimal(scanner);
